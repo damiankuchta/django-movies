@@ -1,0 +1,29 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock title %}</title>
+   <link rel="stylesheet", type="text/css" href="{% static "/css/bootstrap.min.css" %}">
+   <link rel="stylesheet", type="text/css" href="{% static "/css/search_movies_app.css" %}">
+</head>
+<header>
+    <nav class="bg-light d-flex justify-content-end p-2">
+        <div class="pr-5">
+            <form method="post" action="{% url "search-movies-form-handler" %}">
+                {% csrf_token %}
+                {{search_movie_form}}
+                <button type="submit" class="btn btn-success">Search</button>
+            </form>
+        </div>
+
+    </nav>
+</header>
+<body>
+
+    {% block content %}
+    {% endblock content %}
+
+</body>
+</html>

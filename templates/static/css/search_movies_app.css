@@ -1,0 +1,22 @@
+
+#search_bar {
+    width: 15%;
+}
+
+.genres_choice_input {
+    display: none;
+}
+
+.genres_choice_label {
+    width: 100%;
+}
+
+.genres_choice_label:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.genres_choice_input:checked + .genres_choice_label {
+    background-color: gray;
+}
+
