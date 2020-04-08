@@ -122,4 +122,13 @@ class SearchMoviesTest(TestCase):
             movies = None
         self.assertTrue(movies)
 
-
+# class AddToWatchedTest(TestCase):
+#     def setUp(self):
+#         self.user =
+#         self.client = Client()
+#         self.client.force_login()
+#         self.url = reverse("search-movies")
+#     #
+#     # def test_add_to_watched_function(self):
+#     #
+#     #     views.add_to_watch_list

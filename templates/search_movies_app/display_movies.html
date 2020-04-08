@@ -23,15 +23,18 @@
         <div class="w-75 mx-5 pr-5 pt-5">
             {% for m in movies_list %}
                 <div class="card">
-                    <div class="card-header d-flex flex-row">
+                    <div class="card-header d-flex flex-row {% if m.id  in watched_movies %} bg-danger {% elif m.id in wishlisted_movies %} bg-success{% endif %}">
                         <img style="width: 10%; height: 10%;" class="d-inline m-3" src="https://image.tmdb.org/t/p/original/{{ m.poster_path }}" alt="No Poster">
                         <div >
-                            {{ m.title }} Relase date: {{ m.release_date }} Vote average:  {{ m.vote_average }}<br>
+                            {{ m.title }} Relase date: {{ m.release_date }} Vote average:  {{ m.vote_average }}
+                             <a href="{% url "add-to-watched-wishlist" m.id "add_to_watched" %}?{{ query_parameters_url }}&page={{ request.GET.page }}">Watched </a>
+                            <a href="{% url "add-to-watched-wishlist" m.id "add_to_wishlisted" %}?{{ query_parameters_url }}&page={{ request.GET.page }}">Watch list</a>
+                            <br>
                             <br>
                             {{ m.overview }} <br>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
                 <br>
             {% endfor %}

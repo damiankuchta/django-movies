@@ -2,10 +2,13 @@ from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from search_movies_app.forms import SearchMoviesForm
 from .models import UserProfile
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
+
+@login_required
 def display_profile(request):
-    pass
+    user_profile = UserProfile(user=request.user)
+    return render(request, "user_profiles_app/display_profile.html", {"user_profile": user_profile})
 
 def create_user(request):
     search_movie_form = SearchMoviesForm()
@@ -21,8 +24,7 @@ def create_user(request):
                                                                        "search_movie_form": search_movie_form})
 
 
-#todo mark as watched
-#todo add to watchlist
+
 
 #todo profile = watched
 #todo profile - watchlist
