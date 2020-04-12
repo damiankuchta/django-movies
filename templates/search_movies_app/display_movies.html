@@ -1,51 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="d-flex flex-row ">
-
-
-        <div id="search_bar" class=" d-flex justify-content-center bg-light px-5">
-            <form method="post" action="{% url "search-movies-form-handler" %}">
-                {% csrf_token %}
-
-                {{ selecet_genre_form.sort_by }}
-                {% for value, label in selecet_genre_form.fields.with_genres.choices %}
-                    <input class="genres_choice_input" id="{{ label }}" name="with_genres" type="checkbox"  value="{{value}}" {% if value in list_of_genres_from_query_parameter %} checked {% endif %}>
-                    <label class="genres_choice_label" for="{{ label }}"> {{ label }}</label>
-                    <br>
-                {% endfor %}
-
-                <button type="submit" class="btn btn-success">Search</button>
-            </form>
-        </div>
-
-
-        <div class="w-75 mx-5 pr-5 pt-5">
-            {% for m in movies_list %}
-                <div class="card">
-                    <div class="card-header d-flex flex-row {% if m.id  in watched_movies %} bg-danger {% elif m.id in wishlisted_movies %} bg-success{% endif %}">
-                        <img style="width: 10%; height: 10%;" class="d-inline m-3" src="https://image.tmdb.org/t/p/original/{{ m.poster_path }}" alt="No Poster">
-                        <div >
-                            {{ m.title }} Relase date: {{ m.release_date }} Vote average:  {{ m.vote_average }}
-                             <a href="{% url "add-to-watched-wishlist" m.id "add_to_watched" %}?{{ query_parameters_url }}&page={{ request.GET.page }}">Watched </a>
-                            <a href="{% url "add-to-watched-wishlist" m.id "add_to_wishlisted" %}?{{ query_parameters_url }}&page={{ request.GET.page }}">Watch list</a>
-                            <br>
-                            <br>
-                            {{ m.overview }} <br>
-                        </div>
-
-                    </div>
-                </div>
-                <br>
-            {% endfor %}
-            {%  for page in pages %}
-                <a href="{% url "search-movies" %}?{{ query_parameters_url }}&page={{ page }}">{{ page }}</a>
-            {% endfor %}
-        </div>
-    </div>
-
-
-
+    {% include "display_movies.html" %}
 {% endblock content %}
 
-
+{% block pagnation %}
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+             {% for page in pages %}
+                   <li class="page-item"><a class="page-link" href="{% url "search-movies" %}?{{ query_parameters_url }}&page={{ page }}">{{ page }}</a> </li>
+            {% endfor %}
+            </ul>
+        </div>
+{% endblock pagnation %}

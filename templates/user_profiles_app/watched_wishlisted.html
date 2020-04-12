@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="d-flex flex-row">
+        <div id="search_bar" class=" d-flex justify-content-center bg-light px-5">
+            {% include "categories.html" with post_url="watched_wishlist_form_hander" watched_or_wishlisted=watched_or_wishlisted %}
+        </div>
+    <div>
+        {% include "movie_cards.html" %}
+    </div>
+    </div>
+
+{% endblock content %}
+
+{% block pagnation %}
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+             {% for page in amount_of_pages %}
+                   <li class="page-item"> <a class="page-link" href="{% url "watched_or_wishlisted" watched_or_wishlisted page %}">{{ page }}</a> </li>
+            {% endfor %}
+            </ul>
+        </div>
+{% endblock pagnation %}

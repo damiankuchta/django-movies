@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, reverse
-from . import utils
-from .forms import SelectGenreForm, SearchMoviesForm
 from django.contrib.auth.decorators import login_required
 from user_profiles_app.models import UserProfile
+
+from movies_project import utils
+from movies_project.context_processor_forms import SelectGenreForm, SearchMoviesForm
 
 
 def search_movies_form_handler(request, page=1):
@@ -23,18 +24,14 @@ def search_movies_form_handler(request, page=1):
             query_params += "search_type=title&"
             query_params += "query={movie_name}&".format(movie_name=search_movie_form.cleaned_data['query'])
 
-    """ pages quary parameter must stay last """
-    if query_params != "?":
-        query_params += "page={page}".format(page=page)
-    else:
-        query_params = ""
+    """ pages quary parameter must stay last, last element from query url will be deleted in "search_movies" to change pages """
+    query_params += "page={page}".format(page=page)  if query_params != "?" else ""
 
     return redirect(reverse("search-movies") + query_params)
 
 
 def search_movies(request):
     selecet_genre_form = SelectGenreForm(initial={"sort_by": request.GET.get('sort_by')})
-    search_movie_form = SearchMoviesForm()
 
     list_of_genres_from_query_parameter = None
 
@@ -56,13 +53,12 @@ def search_movies(request):
     else:
         pages = utils.get_pages_numbers_to_show(1, total_pages) if movies_list else None
 
-    user = UserProfile.objects.get(user=request.user)
 
+    user = UserProfile.objects.get(user=request.user) if request.user.is_authenticated else UserProfile()
     watched_movies = list(map(int, user.watched_movies.split())) if user.watched_movies is not None else None
-    wishlisted_movies = list(map(int, user.wishlisted_movies.split())) if user.wishlisted_movie is not None else None
+    wishlisted_movies = list(map(int, user.wishlisted_movies.split())) if user.wishlisted_movies is not None else None
 
     return render(request, "search_movies_app/display_movies.html", {"selecet_genre_form": selecet_genre_form,
-                                                                     "search_movie_form": search_movie_form,
                                                                      "list_of_genres_from_query_parameter": list_of_genres_from_query_parameter,
                                                                      "movies_list": movies_list,
                                                                      "pages": pages,
@@ -73,7 +69,8 @@ def search_movies(request):
 
 """
     One function to process two actions, this could be made much simpler with two view functions but I wanted to
-    try and squeeze it into one function
+    try and squeeze it into one function, at the same time this function would be unnecessary with use of jqeury 
+    and ajax, but im focusing purely on back end
 """
 @login_required
 def add_to_watched_wishlisted(request, movie_id, action_to_perform):
@@ -97,8 +94,7 @@ def add_to_watched_wishlisted(request, movie_id, action_to_perform):
             watched_or_wishlisted.append(movie_id)
 
         watched_or_wishlisted = " ".join(str(s) for s in watched_or_wishlisted) if watched_or_wishlisted else None
-        watched_or_wishlisted_second = " ".join(
-            str(s) for s in watched_or_wishlisted_second) if watched_or_wishlisted_second else None
+        watched_or_wishlisted_second = " ".join(str(s) for s in watched_or_wishlisted_second) if watched_or_wishlisted_second else None
 
         user.watched_movies = watched_or_wishlisted if action_to_perform == "add_to_watched" else watched_or_wishlisted_second
         user.wishlisted_movies = watched_or_wishlisted_second if action_to_perform == "add_to_watched" else watched_or_wishlisted
@@ -106,3 +102,9 @@ def add_to_watched_wishlisted(request, movie_id, action_to_perform):
         user.save()
 
     return redirect(reverse("search-movies") + query_parameters_url)
+
+
+#todo get reviews
+#todo comments
+#todo create_reviews - access
+#todo update profile

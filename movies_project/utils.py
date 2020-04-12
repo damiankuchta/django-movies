@@ -27,7 +27,7 @@ def get_movies_genres_option_field():
 """
     Receives list of query parameteres
     Sends requests to TMDB qith recived parameters
-    Returns Json with movies list and total list of pages
+    Returns Json with movies_app list and total list of pages
 """
 def get_moves_by_genres(query_parameters):
     discover_url = "discover/movie"
@@ -77,3 +77,9 @@ def get_pages_numbers_to_show(current_page_number, total_pages, pages_on_each_si
         if r > 0 and r < total_pages:
             pages.append(r)
     return pages
+
+
+def get_movies_by_id(movie_id):
+    search_url = "movie/"
+    data = {"api_key": tmdb_api_key}
+    return tmdb_requests.get(url + search_url + movie_id , params=data).json()

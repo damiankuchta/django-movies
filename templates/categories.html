@@ -1,0 +1,12 @@
+<form method="post" action="{% url post_url %}{% if watched_or_wishlisted %}?watched_or_wishlisted={{watched_or_wishlisted}}{% endif %}">
+    {% csrf_token %}
+
+    {{ selecet_genre_form.sort_by }}
+    {% for value, label in selecet_genre_form.fields.with_genres.choices %}
+        <input class="genres_choice_input" id="{{ label }}" name="with_genres" type="checkbox"  value="{{value}}" {% if value in list_of_genres_from_query_parameter %} checked {% endif %}>
+        <label class="genres_choice_label" for="{{ label }}"> {{ label }}</label>
+        <br>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success">Search</button>
+</form>

@@ -127,7 +127,7 @@ class SearchMoviesTest(TestCase):
 #         self.user =
 #         self.client = Client()
 #         self.client.force_login()
-#         self.url = reverse("search-movies")
+#         self.url = reverse("search-movies_app")
 #     #
 #     # def test_add_to_watched_function(self):
 #     #
