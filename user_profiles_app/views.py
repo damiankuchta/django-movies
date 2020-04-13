@@ -3,12 +3,16 @@ from django.shortcuts import render, redirect, reverse
 from movies_project.utils import get_movies_by_id, get_pages_numbers_to_show
 from movies_project.context_processor_forms import SearchMoviesForm, SelectGenreForm
 from .models import UserProfile
+from movies_app.models import Comments
+
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login
 
 from django.core.paginator import  Paginator
+
+import urllib
 
 # Create your views here.
 
@@ -108,4 +112,52 @@ def watched_wishlist_form_hander(request):
             return redirect(reverse("watched_or_wishlisted", kwargs={"watched_or_wishlisted": watched_or_wishlisted, "page_to_display": 1}) + query_params)
 
     return redirect("watched_or_wishlisted", watched_or_wishlisted=watched_or_wishlisted, page_to_display= 1)
-#
+
+
+"""
+    One function to process two actions, this could be made much simpler with two view functions but I wanted to
+    try and squeeze it into one function, at the same time this function would be unnecessary with use of jqeury 
+    and ajax, but im focusing purely on back end
+"""
+@login_required
+def add_to_watched_wishlisted(request, movie_id, action_to_perform):
+
+    if action_to_perform == "add_to_watched" or action_to_perform == "add_to_wishlisted":
+        user_profile = UserProfile.objects.get(user=request.user)
+
+        watched_movies = list(map(int, user_profile.watched_movies.split())) if user_profile.watched_movies else []
+        wishlisted_movies = list(map(int, user_profile.wishlisted_movies.split())) if user_profile.wishlisted_movies else []
+
+        watched_or_wishlisted = watched_movies if action_to_perform == "add_to_watched" else wishlisted_movies
+        watched_or_wishlisted_second = wishlisted_movies if action_to_perform == "add_to_watched" else watched_movies
+
+        # DESELECT - SWAP - ADD
+        if movie_id in watched_or_wishlisted:  # DeSelect
+            watched_or_wishlisted.remove(movie_id)
+        elif movie_id in watched_or_wishlisted_second:  # SWap
+            watched_or_wishlisted_second.remove(movie_id)
+            watched_or_wishlisted.append(movie_id)
+        else:  # ADD
+            watched_or_wishlisted.append(movie_id)
+
+        watched_or_wishlisted = " ".join(str(s) for s in watched_or_wishlisted) if watched_or_wishlisted else None
+        watched_or_wishlisted_second = " ".join(str(s) for s in watched_or_wishlisted_second) if watched_or_wishlisted_second else None
+
+        user_profile.watched_movies = watched_or_wishlisted if action_to_perform == "add_to_watched" else watched_or_wishlisted_second
+        user_profile.wishlisted_movies = watched_or_wishlisted_second if action_to_perform == "add_to_watched" else watched_or_wishlisted
+
+        user_profile.save()
+
+
+        return_to_query = request.GET.get("return_to")
+
+        get = request.GET.copy()
+        del get['return_to']
+        query_parameters_url = "?" + get.urlencode()
+
+        if return_to_query == "movie":
+            return redirect("display-movie", movie_id=movie_id)
+        elif return_to_query == "search":
+            return redirect(reverse("search-movies") + query_parameters_url)
+
+        return redirect("display-profile")

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'search_movies_app',
     'user_profiles_app',
+    'movies_app',
     'crispy_forms',
 ]
 
