@@ -35,11 +35,3 @@ def add_comment_form_handler(request, movie_id):
     return redirect("display-movie", movie_id=movie_id)
 
 
-@login_required
-def add_review_form_handler(request, movie_id):
-    if request.POST:
-        new_review = models.Reviews(user=request.user)
-        review_form = forms.AddReview(request.POST, instance=new_review)
-        if review_form.is_valid():
-           review_form.save()
-    return redirect("display-movie", movie_id=movie_id)
