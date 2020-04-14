@@ -3,8 +3,6 @@ from django.shortcuts import render, redirect, reverse
 from movies_project.utils import get_movies_by_id, get_pages_numbers_to_show
 from movies_project.context_processor_forms import SearchMoviesForm, SelectGenreForm
 from .models import UserProfile
-from movies_app.models import Comments
-
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -35,7 +33,7 @@ def create_user(request):
         if user_creation_form.is_valid():
             user = user_creation_form.save()
             UserProfile(user=user).save()
-            login(user)
+            login(request, user)
             return redirect("search-movies")
     else:
         user_creation_form = UserCreationForm()
