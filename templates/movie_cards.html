@@ -5,8 +5,8 @@
             <div>
                 <a href="{% url "display-movie" m.id %}">{{ m.title }}</a>  Relase date: {{ m.release_date }} Vote average:  {{ m.vote_average }}
                 {% if request.user.is_authenticated %}
-                 <a href="{% url "add-to-watched-wishlist" m.id "add_to_watched" %}?{{ query_parameters_url }}&page={{ request.GET.page }}">Watched </a>
-                <a href="{% url "add-to-watched-wishlist" m.id "add_to_wishlisted" %}?{{ query_parameters_url }}&page={{ request.GET.page }}">Watch list</a>
+                 <a href="{% url "add-to-watched-wishlist" m.id "add_to_watched" %}?{{ query_parameters_url }}$return_to=search&page={{ request.GET.page }}">Watched </a>
+                <a href="{% url "add-to-watched-wishlist" m.id "add_to_wishlisted" %}?{{ query_parameters_url }}$return_to=search&page={{ request.GET.page }}">Watch list</a>
                 {% endif %}
                 <br>
                 <br>
