@@ -1,1 +1,1 @@
-web: gunicorn TodoList.wsgi --log-file -
+web: gunicorn movies_project.wsgi --log-file -
