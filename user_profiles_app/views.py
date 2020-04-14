@@ -150,7 +150,11 @@ def add_to_watched_wishlisted(request, movie_id, action_to_perform):
         return_to_query = request.GET.get("return_to")
 
         get = request.GET.copy()
-        del get['return_to']
+        try:
+            del get['return_to']
+        except:
+            return redirect("display-profile")
+
         query_parameters_url = "?" + get.urlencode()
 
         if return_to_query == "movie":
@@ -158,4 +162,3 @@ def add_to_watched_wishlisted(request, movie_id, action_to_perform):
         elif return_to_query == "search":
             return redirect(reverse("search-movies") + query_parameters_url)
 
-        return redirect("display-profile")
